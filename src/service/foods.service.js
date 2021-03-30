@@ -8,8 +8,6 @@ class FoodsService {
         })
     }
     getFoods = () => this.service.get('/foods')
-    searchFood = (name) => this.service.get(`/foods/search/${name}`)
-
-    
+    getFood = (_id) => this.service.get(`/foods/details/${_id}`)
 }
 export default FoodsService

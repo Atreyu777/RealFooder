@@ -29,7 +29,6 @@ class Navigation extends Component {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav>
                         <Nav.Link as="div"><Link to="/">Inicio</Link></Nav.Link>
-                        <Nav.Link as="div"><Link to="/alimentos">Alimentos</Link></Nav.Link>
 
                         {
                             !this.props.loggedInUser ?
@@ -37,22 +36,18 @@ class Navigation extends Component {
                                     <Nav.Link as="div"><Link to="/login">Iniciar sesión</Link></Nav.Link>
                                     <Nav.Link as="div"><Link to="/signup">Registro</Link></Nav.Link>
                                 </>
-
                                 :
                                 <>
                                     <Nav.Link as="div" onClick={this.logout}>Cerrar sesión</Nav.Link>
+                                    <Nav.Link as="div"><Link to="/alimentos">Alimentos</Link></Nav.Link>
                                 </>
-
                         }
-
                     </Nav>
                     <Navbar.Text className="ml-auto"> Hola, {this.props.loggedInUser ? this.props.loggedInUser.username : 'invitad@'}</Navbar.Text>
                 </Navbar.Collapse>
-
             </Navbar>
         )
     }
-
 }
 
 export default Navigation
