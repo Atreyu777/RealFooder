@@ -4,8 +4,8 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 
 class FoodForm extends Component {
 
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
             food: {
             name: '',
