@@ -8,8 +8,8 @@ import FoodForm from './FoodForm'
 
 class FoodsIndex extends Component {
 
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
             foods: [],
             text: '',
