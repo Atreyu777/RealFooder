@@ -11,6 +11,7 @@ import Signup from './pages/signup/Signup'
 import Login from './pages/login/Login'
 import FoodsIndex from './pages/foodsIndex/FoodsIndex'
 import FoodDetails from './pages/foodsIndex/FoodDetails'
+import FoodForm from './pages/foodsIndex/FoodForm'
 
 import AuthService from '../service/auth.service'
 
@@ -46,6 +47,7 @@ class App extends Component {
                     <Route path="/signup" render={props => <Signup {...props} setTheUser={this.setTheUser} />} />
                     <Route path="/alimentos" render={props => <FoodsIndex {...props} loggedInUser={this.state.loggedInUser} />} />
                     <Route path="/detalles/:food_id" render={props => <FoodDetails {...props} />} />
+                    <Route path="/alimentos/nuevoAlimento" render={() => <FoodForm loggedInUser={this.state.loggedInUser} />} />
                 </Switch>
             </>
         )

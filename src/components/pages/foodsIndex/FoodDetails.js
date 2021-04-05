@@ -1,7 +1,8 @@
 import React from 'react'
 import { Component } from 'react'
 import FoodsService from './../../../service/foods.service'
-import { Container, Row, Col, Tabs, Tab } from 'react-bootstrap'
+import { Container, Row, Col, Tabs, Tab, Button } from 'react-bootstrap'
+import { Link  } from 'react-router-dom'
 
 
 class FoodDetails extends Component {
@@ -68,7 +69,9 @@ class FoodDetails extends Component {
                                     <p>Stock actual: {this.state.food?.stock} unidades en stock</p>
                                 </Tab>
                             </Tabs>
+                        <Link to={'/alimentos'} className="btn btn-info" style={{ margin: 10 }}>Volver al índice</Link>
                         </Col>
+
                     </Row>
                 </>
             </Container>
