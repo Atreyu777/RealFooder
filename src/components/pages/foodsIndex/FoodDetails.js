@@ -1,7 +1,7 @@
 import React from 'react'
 import { Component } from 'react'
 import FoodsService from './../../../service/foods.service'
-import { Container, Row, Col, Tabs, Tab, Button } from 'react-bootstrap'
+import { Container, Row, Col, Tabs, Tab } from 'react-bootstrap'
 import { Link  } from 'react-router-dom'
 
 
@@ -36,7 +36,7 @@ class FoodDetails extends Component {
                     <Row>
                         <Col md={4}>
                             <h2>{this.state.food?.name}</h2>
-                            <img src={this.state.food?.img} alt={this.state.food?.name} style={{ width: 200 }} />
+                            <img src={this.state.food?.img} alt="" style={{ width: 200 }} />
 
                         </Col>
                         <Col md={8}>

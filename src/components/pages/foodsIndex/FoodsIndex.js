@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import FoodsService from '../../../service/foods.service'
 import { Container, Row, Col, Table, Modal, Button } from 'react-bootstrap'
-import { Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import FoodForm from './FoodForm'
 
 
@@ -13,7 +13,8 @@ class FoodsIndex extends Component {
         this.state = {
             foods: [],
             text: '',
-            showForm: false
+            showForm: false,
+            foodToEdit: undefined
         }
         this.foodsService = new FoodsService()
     }
@@ -29,6 +30,17 @@ class FoodsIndex extends Component {
             .catch(err => console.log(err))
     }
 
+    deleteFood(foodId) {
+        this.foodsService
+            .deleteFood(foodId)
+            .then(() => {
+                this.loadFoods()
+                this.props.handleAlert(true, "Registro borrado", "Se ha borrado el alimento")
+            })
+            .catch(err => console.log(err))
+
+    }
+
     filter(event) {
         let text = event.target.value
         const data = this.state.foods
@@ -42,8 +54,9 @@ class FoodsIndex extends Component {
             text: text,
         })
     }
-    toggleModalForm(value) {
-        this.setState({ showForm: value })
+    toggleModalForm(value, food) {
+        this.setState({ showForm: value, foodToEdit: food })
+
     }
 
     render() {
@@ -55,7 +68,10 @@ class FoodsIndex extends Component {
                     <p>Consulta los detalles de stock, precios y origen de nuestros alimentos</p>
                     <input className="form-control" value={this.state.text} onChange={(text) => this.filter(text)} />
                     <br />
-                    <Button variant="info" onClick={() => this.toggleModalForm(true)} style={{ margin: 20 }}>Añade tu alimento</Button>
+                    {this.props.loggedInUser
+                        &&
+                        <Button variant="info" onClick={() => this.toggleModalForm(true)} style={{ margin: 20 }}>Añade tu alimento</Button>
+                    }
                     <Row>
                         <Col md={10}>
                             <Table>
@@ -68,9 +84,20 @@ class FoodsIndex extends Component {
                                             <td>Precio: {food.price} </td>
                                             <td>Stock disponible: {food.stock}</td>
                                             <td>{{ ...food.origin } === this.props.loggedInUser.country ? 'Proximidad' : ''}</td>
-                                            {/* origin esta dentro de un array pero no se la sintaxis necesaria o como plantearla para que funcione */}
                                             <td>
-                                            <Link to={`/detalles/${food._id}`} className="btn btn-info" style={{ margin: 10 }}>Detalles</Link>
+                                                <Link to={`/detalles/${food._id}`} className="btn btn-info" style={{ margin: 10 }}>Detalles</Link>
+
+
+                                                {food.owner_id === this.props.loggedInUser._id
+                                                    &&
+                                                    <>
+                                                        <Button onClick={() => this.toggleModalForm(true, food)} className="btn btn-info">Editar</Button>
+                                                        <Button onClick={() => this.deleteFood(food._id)} refreshList={() => this.loadFoods()} className="btn btn-info">Borrar</Button>
+                                                    </>
+                                                }
+
+
+
                                             </td>
                                         </tr>
                                     )
@@ -79,14 +106,14 @@ class FoodsIndex extends Component {
                             </Table>
                         </Col>
                     </Row>
-                <Modal show={this.state.showForm} onHide={() => this.toggleModalForm(false)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Añade un alimento</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <FoodForm closeModal={() => this.toggleModalForm(false)} refreshList={() => this.loadFoods()} />
-                    </Modal.Body>
-                </Modal>
+                    <Modal show={this.state.showForm} onHide={() => this.toggleModalForm(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Formulario de alimento</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <FoodForm handleAlert={this.props.handleAlert} food={this.state.foodToEdit} user={this.props.loggedInUser?._id} closeModal={() => this.toggleModalForm(false)} refreshList={() => this.loadFoods()} />
+                        </Modal.Body>
+                    </Modal>
                 </Container>
             </main>
 

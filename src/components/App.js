@@ -13,13 +13,23 @@ import FoodsIndex from './pages/foodsIndex/FoodsIndex'
 import FoodDetails from './pages/foodsIndex/FoodDetails'
 import FoodForm from './pages/foodsIndex/FoodForm'
 
+import Alert from './shared/Alert'
+
 import AuthService from '../service/auth.service'
 
 class App extends Component {
 
     constructor() {
         super()
-        this.state = { loggedInUser: null }
+        this.state = { 
+            loggedInUser: null,
+            alert: {
+                show: false,
+                title: "",
+                message: ""
+            }
+             
+        }
         this.authService = new AuthService()
     }
 
@@ -32,6 +42,7 @@ class App extends Component {
                 .catch(() => this.setTheUser(false))
         }
     }
+handleAlert = (show, title, message) => this.setState({alert: {show, title, message}})
 
 
     render() {
@@ -45,10 +56,13 @@ class App extends Component {
                     <Route path="/" exact component={IndexPage} />
                     <Route path="/login" render={props => <Login {...props} setTheUser={this.setTheUser} />} />
                     <Route path="/signup" render={props => <Signup {...props} setTheUser={this.setTheUser} />} />
-                    <Route path="/alimentos" render={props => <FoodsIndex {...props} loggedInUser={this.state.loggedInUser} />} />
-                    <Route path="/detalles/:food_id" render={props => <FoodDetails {...props} />} />
+                    <Route path="/alimentos" render={props => <FoodsIndex {...props} loggedInUser={this.state.loggedInUser} handleAlert={this.handleAlert} />} />
+                    <Route path="/detalles/:food_id" render={props => <FoodDetails {...props} loggedInUser={this.state.loggedInUser} />} />
                     <Route path="/alimentos/nuevoAlimento" render={() => <FoodForm loggedInUser={this.state.loggedInUser} />} />
+                    <Route path="/editar/:food_id" render={props => <FoodDetails {...props} loggedInUser={this.state.loggedInUser} handleAlert={this.handleAlert} />} />
+                    
                 </Switch>
+                <Alert handleAlert={this.handleAlert} show={this.state.alert.show} title={this.state.alert.title} message={this.state.alert.message}/>
             </>
         )
     }

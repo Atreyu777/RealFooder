@@ -4,20 +4,22 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 
 class FoodForm extends Component {
 
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             food: {
-            name: '',
-            description: '',
-            img: '',
-            price: '',
-            kcal: '',
-            protein: '',
-            fat: '',
-            carbs: '',
-            stock: '',
-            origin: ''
+                id: props.food?._id || '',
+                name: props.food?.name || '',
+                description: props.food?.description || '',
+                img: props.food?.img || '',
+                price: props.food?.price || '',
+                kcal: props.food?.kcal || '',
+                protein: props.food?.protein || '',
+                fat: props.food?.fat || '',
+                carbs: props.food?.carbs || '',
+                stock: props.food?.stock || '',
+                origin: props.food?.origin || '',
+                owner_id: props.user || ''
             }
         }
         this.foodsService = new FoodsService()
@@ -30,16 +32,30 @@ class FoodForm extends Component {
 
     handleSubmit(e) {
         e.preventDefault()
-        
-        this.foodsService
-            .createFood(this.state.food)
-            .then(() => this.finishAction())            
-            .catch(err => console.log(err))
+        if (this.props.food) {
+            this.foodsService
+                .editFood(this.state.food.id, this.state.food)
+                .then(() =>{ 
+                    this.finishAction()
+                    this.props.handleAlert(true, "Requistro modificado", "Se ha modificado el alimento")
+                })
+                .catch(err => console.log(err))
+
+        } else {
+            this.foodsService
+                .createFood(this.state.food)
+                .then(() =>{ 
+                    this.finishAction()
+                    this.props.handleAlert(true, "Registro añadido", "Se ha añadido el alimento")
+                })
+                .catch(err => console.log(err))
+        }
     }
 
-    finishAction(){
+    finishAction() {
         this.props.closeModal()
         this.props.refreshList()
+        
     }
 
 
@@ -48,7 +64,7 @@ class FoodForm extends Component {
         return (
 
             <>
-                <h3>Nuevo Alimento</h3>
+                <h3>{this.props.food ? "Editar Alimento " : "Nuevo Alimento" }</h3>
                 <Form onSubmit={(e) => this.handleSubmit(e)}>
                     <Row>
                         <Col>
@@ -103,7 +119,7 @@ class FoodForm extends Component {
                             <Form.Group>
                                 <Form.Check required name="imp" label="Aplica impuestos de importación" />
                             </Form.Group>
-                            <Button variant="info" type="submit">Crear Alimento</Button>
+                            <Button variant="info" type="submit">{this.props.food ? "Modificar Alimento " : "Crear Alimento" }</Button>
                         </Col>
                     </Row>
                 </Form>
@@ -112,4 +128,4 @@ class FoodForm extends Component {
     }
 }
 
-export default FoodForm 
+export default FoodForm
