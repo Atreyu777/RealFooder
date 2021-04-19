@@ -26,7 +26,11 @@ class FoodForm extends Component {
     }
 
     handleInputChange(e) {
-        const { name, value } = e.target
+        let { name, value } = e.target
+        if (name === "origin") {
+            value = value.split(",")
+            value = value.map(elm => elm.trim())
+        }
         this.setState({ food: { ...this.state.food, [name]: value } })
     }
 
@@ -35,16 +39,15 @@ class FoodForm extends Component {
         if (this.props.food) {
             this.foodsService
                 .editFood(this.state.food.id, this.state.food)
-                .then(() =>{ 
+                .then(() => {
                     this.finishAction()
                     this.props.handleAlert(true, "Requistro modificado", "Se ha modificado el alimento")
                 })
                 .catch(err => console.log(err))
-
         } else {
             this.foodsService
                 .createFood(this.state.food)
-                .then(() =>{ 
+                .then(() => {
                     this.finishAction()
                     this.props.handleAlert(true, "Registro añadido", "Se ha añadido el alimento")
                 })
@@ -55,16 +58,14 @@ class FoodForm extends Component {
     finishAction() {
         this.props.closeModal()
         this.props.refreshList()
-        
+
     }
-
-
 
     render() {
         return (
 
             <>
-                <h3>{this.props.food ? "Editar Alimento " : "Nuevo Alimento" }</h3>
+                <h3>{this.props.food ? "Editar Alimento " : "Nuevo Alimento"}</h3>
                 <Form onSubmit={(e) => this.handleSubmit(e)}>
                     <Row>
                         <Col>
@@ -119,7 +120,7 @@ class FoodForm extends Component {
                             <Form.Group>
                                 <Form.Check required name="imp" label="Aplica impuestos de importación" />
                             </Form.Group>
-                            <Button variant="info" type="submit">{this.props.food ? "Modificar Alimento " : "Crear Alimento" }</Button>
+                            <Button variant="info" type="submit">{this.props.food ? "Modificar Alimento " : "Crear Alimento"}</Button>
                         </Col>
                     </Row>
                 </Form>

@@ -4,8 +4,6 @@ import { Container, Row, Col, Table, Modal, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import FoodForm from './FoodForm'
 
-
-
 class FoodsIndex extends Component {
 
     constructor() {
@@ -14,7 +12,8 @@ class FoodsIndex extends Component {
             foods: [],
             text: '',
             showForm: false,
-            foodToEdit: undefined
+            foodToEdit: undefined,
+            filteredFoods: undefined,
         }
         this.foodsService = new FoodsService()
     }
@@ -50,10 +49,11 @@ class FoodsIndex extends Component {
             return itemData.indexOf(textData) > -1
         })
         this.setState({
-            foods: newData,
+            filteredFoods: newData,
             text: text,
         })
     }
+
     toggleModalForm(value, food) {
         this.setState({ showForm: value, foodToEdit: food })
 
@@ -66,7 +66,7 @@ class FoodsIndex extends Component {
                 <Container>
                     <h1>Stock de alimentos</h1>
                     <p>Consulta los detalles de stock, precios y origen de nuestros alimentos</p>
-                    <input className="form-control" value={this.state.text} onChange={(text) => this.filter(text)} />
+                    <input className="form-control" value={this.state.text} onChange={(event) => this.filter(event)} />
                     <br />
                     {this.props.loggedInUser
                         &&
@@ -76,31 +76,48 @@ class FoodsIndex extends Component {
                         <Col md={10}>
                             <Table>
                                 <tbody>
-                                    {this.state.foods?.map((food) =>
+                                    {this.state.filteredFoods
+                                        ? (this.state.filteredFoods.map((food) =>
+                                            <tr key={food._id}>
+                                                <td><img src={food.img} alt='' /></td>
+                                                <td>{food.name}</td>
+                                                <td>Precio: {food.price} </td>
+                                                <td>Stock disponible: {food.stock}</td>
+                                                <td>{food.origin.some(elm => elm === this.props.loggedInUser.country) ? 'Proximidad' : ''}</td>
+                                                <td>
+                                                    <Link to={`/detalles/${food._id}`} className="btn btn-info" style={{ margin: 10 }}>Detalles</Link>
 
-                                        <tr key={food._id}>
-                                            <td><img src={food.img} alt='' /></td>
-                                            <td>{food.name}</td>
-                                            <td>Precio: {food.price} </td>
-                                            <td>Stock disponible: {food.stock}</td>
-                                            <td>{{ ...food.origin } === this.props.loggedInUser.country ? 'Proximidad' : ''}</td>
-                                            <td>
-                                                <Link to={`/detalles/${food._id}`} className="btn btn-info" style={{ margin: 10 }}>Detalles</Link>
+                                                    {food.owner_id === this.props.loggedInUser._id
+                                                        &&
+                                                        <>
+                                                            <Button onClick={() => this.toggleModalForm(true, food)} className="btn btn-info">Editar</Button>
+                                                            <Button onClick={() => this.deleteFood(food._id)} refreshList={() => this.loadFoods()} className="btn btn-info">Borrar</Button>
+                                                        </>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        ))
 
+                                        : (this.state.foods?.map((food) =>
+                                            <tr key={food._id}>
+                                                <td><img src={food.img} alt='' /></td>
+                                                <td>{food.name}</td>
+                                                <td>Precio: {food.price} </td>
+                                                <td>Stock disponible: {food.stock}</td>
+                                                <td>{food.origin.some(elm => elm === this.props.loggedInUser.country) ? <code>Proximidad</code> : ''}</td>
+                                                <td>
+                                                    <Link to={`/detalles/${food._id}`} className="btn btn-info" style={{ margin: 10 }}>Detalles</Link>
 
-                                                {food.owner_id === this.props.loggedInUser._id
-                                                    &&
-                                                    <>
-                                                        <Button onClick={() => this.toggleModalForm(true, food)} className="btn btn-info">Editar</Button>
-                                                        <Button onClick={() => this.deleteFood(food._id)} refreshList={() => this.loadFoods()} className="btn btn-info">Borrar</Button>
-                                                    </>
-                                                }
-
-
-
-                                            </td>
-                                        </tr>
-                                    )
+                                                    {food.owner_id === this.props.loggedInUser._id
+                                                        &&
+                                                        <>
+                                                            <Button onClick={() => this.toggleModalForm(true, food)} className="btn btn-info">Editar</Button>
+                                                            <Button onClick={() => this.deleteFood(food._id)} refreshList={() => this.loadFoods()} className="btn btn-info">Borrar</Button>
+                                                        </>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        ))
                                     }
                                 </tbody>
                             </Table>

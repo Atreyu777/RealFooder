@@ -19,9 +19,7 @@ class Navigation extends Component {
         this.authService.logout()
     }
 
-
     render() {
-
         return (
             <Navbar expand="md">
                 <Navbar.Brand as="div"><Link to="/">RealFooder!</Link></Navbar.Brand>
@@ -42,6 +40,7 @@ class Navigation extends Component {
                                     <Nav.Link as="div"><Link to="/alimentos">Alimentos</Link></Nav.Link>
                                 </>
                         }
+
                     </Nav>
                     <Navbar.Text className="ml-auto"> Hola, {this.props.loggedInUser ? this.props.loggedInUser.username : 'invitad@'}</Navbar.Text>
                 </Navbar.Collapse>

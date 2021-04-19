@@ -21,14 +21,14 @@ class App extends Component {
 
     constructor() {
         super()
-        this.state = { 
+        this.state = {
             loggedInUser: null,
             alert: {
                 show: false,
                 title: "",
                 message: ""
             }
-             
+
         }
         this.authService = new AuthService()
     }
@@ -42,8 +42,8 @@ class App extends Component {
                 .catch(() => this.setTheUser(false))
         }
     }
-handleAlert = (show, title, message) => this.setState({alert: {show, title, message}})
 
+    handleAlert = (show, title, message) => this.setState({ alert: { show, title, message } })
 
     render() {
 
@@ -60,9 +60,8 @@ handleAlert = (show, title, message) => this.setState({alert: {show, title, mess
                     <Route path="/detalles/:food_id" render={props => <FoodDetails {...props} loggedInUser={this.state.loggedInUser} />} />
                     <Route path="/alimentos/nuevoAlimento" render={() => <FoodForm loggedInUser={this.state.loggedInUser} />} />
                     <Route path="/editar/:food_id" render={props => <FoodDetails {...props} loggedInUser={this.state.loggedInUser} handleAlert={this.handleAlert} />} />
-                    
                 </Switch>
-                <Alert handleAlert={this.handleAlert} show={this.state.alert.show} title={this.state.alert.title} message={this.state.alert.message}/>
+                <Alert handleAlert={this.handleAlert} show={this.state.alert.show} title={this.state.alert.title} message={this.state.alert.message} />
             </>
         )
     }
